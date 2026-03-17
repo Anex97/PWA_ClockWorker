@@ -37,10 +37,44 @@ body {
 .title {
     font-size: 2.5em;
     color: #00a8e8;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     font-weight: 700;
     text-shadow: 0 2px 10px rgba(0, 168, 232, 0.3);
     letter-spacing: 2px;
+}
+
+/* Contenedor de Toothless */
+.toothless-container {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Imagen de Toothless */
+.toothless-image {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 15px rgba(0, 168, 232, 0.4));
+    animation: floatToothless 3s ease-in-out infinite;
+    transition: transform 0.3s ease;
+}
+
+/* Animación flotante para Toothless */
+@keyframes floatToothless {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Hover effect */
+.toothless-image:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 25px rgba(0, 168, 232, 0.8));
 }
 
 /* Contenedor del reloj */
