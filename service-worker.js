@@ -14,7 +14,7 @@ const ARCHIVOS_A_CACHEAR = [
     '/app.js',
     '/manifest.json',
     '/icon-192.png',
-    '/toothless.svg'
+    '/toothless.png'
 ];
 
 /**
