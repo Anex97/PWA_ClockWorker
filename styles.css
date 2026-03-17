@@ -1,0 +1,178 @@
+/* ===========================================
+   CLOCK WORKER - HOJA DE ESTILOS (styles.css)
+   Estilos para la PWA del reloj en tiempo real
+   =========================================== */
+
+/* Configuración global */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilos del cuerpo de la página */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #001a33 0%, #003d66 50%, #004d7a 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Contenedor principal */
+.container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 168, 232, 0.1);
+    backdrop-filter: blur(10px);
+    max-width: 90%;
+    border: 1px solid rgba(0, 168, 232, 0.2);
+}
+
+/* Título de la aplicación */
+.title {
+    font-size: 2.5em;
+    color: #00a8e8;
+    margin-bottom: 30px;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(0, 168, 232, 0.3);
+    letter-spacing: 2px;
+}
+
+/* Contenedor del reloj */
+.clock-display {
+    margin: 30px 0;
+    padding: 40px 20px;
+    background: rgba(0, 168, 232, 0.1);
+    border-radius: 15px;
+    border: 2px solid #00a8e8;
+    box-shadow: 0 0 20px rgba(0, 168, 232, 0.2), inset 0 0 20px rgba(0, 168, 232, 0.05);
+}
+
+/* Envoltorio de la hora */
+.time-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Texto del reloj (hora) */
+.clock-text {
+    font-size: 4em;
+    font-weight: 700;
+    color: #00a8e8;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 5px;
+    text-shadow: 0 0 10px rgba(0, 168, 232, 0.5);
+    animation: glow 2s ease-in-out infinite;
+}
+
+/* Animación de brillo para el reloj */
+@keyframes glow {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(0, 168, 232, 0.5);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(0, 168, 232, 0.8), 0 0 30px rgba(0, 168, 232, 0.6);
+    }
+}
+
+/* Sección de información (fecha) */
+.info {
+    margin-top: 25px;
+}
+
+/* Texto de la fecha */
+.date-text {
+    font-size: 1.2em;
+    color: #a8d8ff;
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+/* Sección de estado */
+.status {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 168, 232, 0.2);
+}
+
+/* Texto del estado */
+.status-text {
+    font-size: 0.9em;
+    color: #7fbfd9;
+    font-style: italic;
+}
+
+/* Responsividad para dispositivos móviles en portrait (vertical) */
+@media (max-width: 768px) {
+    .container {
+        padding: 25px 20px;
+        border-radius: 15px;
+    }
+    
+    .title {
+        font-size: 2em;
+        margin-bottom: 20px;
+    }
+    
+    .clock-display {
+        padding: 30px 15px;
+        margin: 20px 0;
+    }
+    
+    .clock-text {
+        font-size: 3em;
+        letter-spacing: 3px;
+    }
+    
+    .date-text {
+        font-size: 1em;
+    }
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 480px) {
+    body {
+        min-height: 100vh;
+    }
+    
+    .container {
+        padding: 20px 15px;
+    }
+    
+    .title {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+    }
+    
+    .clock-display {
+        padding: 20px 10px;
+        margin: 15px 0;
+    }
+    
+    .clock-text {
+        font-size: 2.5em;
+        letter-spacing: 2px;
+    }
+    
+    .date-text {
+        font-size: 0.9em;
+    }
+    
+    .status-text {
+        font-size: 0.8em;
+    }
+}
+
+/* Prevenir rotación horizontal en dispositivos móviles */
+@media (orientation: portrait) {
+    body {
+        min-height: 100vh;
+    }
+}

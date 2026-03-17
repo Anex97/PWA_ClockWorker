@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PWA - Clock Worker: Aplicación que muestra la hora actual en tiempo real">
+    <meta name="theme-color" content="#00a8e8">
+    
+    <!-- Enlace al archivo de estilos -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Enlace al archivo de manifiesto para PWA -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Iconos de la aplicación -->
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <title>Clock Worker - Reloj en Tiempo Real</title>
+</head>
+<body>
+    <!-- Contenedor principal -->
+    <div class="container">
+        <h1 class="title">Clock Worker</h1>
+        
+        <!-- Contenedor del reloj -->
+        <div class="clock-display">
+            <div class="time-wrapper">
+                <span id="clock" class="clock-text">00:00:00</span>
+            </div>
+        </div>
+        
+        <!-- Información adicional -->
+        <div class="info">
+            <p id="date-display" class="date-text">Cargando fecha...</p>
+        </div>
+        
+        <!-- Mensaje de estado de la PWA -->
+        <div class="status">
+            <p id="status-message" class="status-text">Inicializando aplicación...</p>
+        </div>
+    </div>
+    
+    <!-- Script principal de la aplicación -->
+    <script src="app.js"></script>
+    
+    <!-- Script de registro del Service Worker -->
+    <script>
+        // Registrar el Service Worker cuando la página cargue
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        console.log('✓ Service Worker registrado correctamente');
+                        document.getElementById('status-message').textContent = '✓ Aplicación lista - Funciona sin conexión';
+                    })
+                    .catch(error => {
+                        console.error('✗ Error al registrar Service Worker:', error);
+                        document.getElementById('status-message').textContent = '⚠ Aplicación en modo línea';
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
