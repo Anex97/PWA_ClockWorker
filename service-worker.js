@@ -4,7 +4,7 @@
    =========================================== */
 
 // Versión del caché - cambiar cuando se realicen cambios
-const VERSION_CACHE = 'clock-worker-v4';
+const VERSION_CACHE = 'clock-worker-v5';
 
 // Archivos a cachear
 const ARCHIVOS_A_CACHEAR = [
@@ -12,6 +12,7 @@ const ARCHIVOS_A_CACHEAR = [
     '/index.html',
     '/styles.css',
     '/app.js',
+    '/install.js',
     '/manifest.json',
     '/icon-192.png',
     '/toothless.png',

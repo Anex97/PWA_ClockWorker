@@ -45,6 +45,11 @@
             <p id="status-message" class="status-text">Inicializando aplicación...</p>
         </div>
         
+        <!-- Botón de instalación (aparece cuando es instalable) -->
+        <button id="install-button" class="install-button" style="display: none;">
+            📲 Instalar en tu dispositivo
+        </button>
+        
         <!-- GIF animado de Toothless en la parte inferior -->
         <div class="gif-container">
             <img src="Toothless_animated.gif" alt="Toothless animado" class="toothless-gif">
@@ -53,6 +58,9 @@
     
     <!-- Script principal de la aplicación -->
     <script src="app.js"></script>
+    
+    <!-- Script de instalación de la PWA -->
+    <script src="install.js"></script>
     
     <!-- Script de registro del Service Worker -->
     <script>
