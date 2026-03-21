@@ -4,7 +4,7 @@
    =========================================== */
 
 // Versión del caché - cambiar cuando se realicen cambios
-const VERSION_CACHE = 'clock-worker-v7';
+const VERSION_CACHE = 'clock-worker-v8';
 
 // Archivos a cachear
 const ARCHIVOS_A_CACHEAR = [
@@ -15,6 +15,7 @@ const ARCHIVOS_A_CACHEAR = [
     './install.js',
     './manifest.json',
     './icon-192.png',
+    './icon-512.png',
     './toothless.png',
     './Toothless_animated.gif'
 ];
