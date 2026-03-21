@@ -4,19 +4,19 @@
    =========================================== */
 
 // Versión del caché - cambiar cuando se realicen cambios
-const VERSION_CACHE = 'clock-worker-v6';
+const VERSION_CACHE = 'clock-worker-v7';
 
 // Archivos a cachear
 const ARCHIVOS_A_CACHEAR = [
-    '/',
-    '/index.html',
-    '/styles.css',
-    '/app.js',
-    '/install.js',
-    '/manifest.json',
-    '/icon-192.png',
-    '/toothless.png',
-    '/Toothless_animated.gif'
+    './',
+    './index.html',
+    './styles.css',
+    './app.js',
+    './install.js',
+    './manifest.json',
+    './icon-192.png',
+    './toothless.png',
+    './Toothless_animated.gif'
 ];
 
 /**
