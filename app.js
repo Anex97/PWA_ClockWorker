@@ -3,6 +3,9 @@
    Actualiza la hora en tiempo real cada segundo
    =========================================== */
 
+// Variable global del intervalo del reloj
+let intervaloReloj = null;
+
 /**
  * Función para obtener la hora actual formateada
  * @returns {string} Hora en formato HH:MM:SS
@@ -60,33 +63,81 @@ function actualizarReloj() {
         // Actualizar la hora
         elementoReloj.textContent = obtenerHoraActual();
         
-        // Actualizar la fecha (menos frecuentemente para mayor rendimiento)
+        // Actualizar la fecha
         elementoFecha.textContent = obtenerFechaActual();
     }
 }
 
 /**
- * Inicialización de la aplicación
+ * Función para iniciar el reloj automático
+ * Se puede llamar múltiples veces sin problemas
  */
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('✓ Aplicación Clock Worker iniciada');
+function iniciarReloj() {
+    // Detener intervalo anterior si existe (por si acaso)
+    if (intervaloReloj) {
+        clearInterval(intervaloReloj);
+        console.log('⏹ Intervalo anterior detenido');
+    }
+    
+    console.log('⏱ Iniciando reloj...');
     
     // Actualizar la hora inmediatamente
     actualizarReloj();
     
     // Actualizar la hora cada segundo (1000 ms)
-    setInterval(actualizarReloj, 1000);
+    intervaloReloj = setInterval(actualizarReloj, 1000);
     
-    // Log de confirmación
     console.log('✓ Reloj actualizándose automáticamente cada segundo');
+}
+
+/**
+ * Inicialización de la aplicación - Ejecutarse lo antes posible
+ */
+if (document.readyState === 'loading') {
+    // El DOM aún se está cargando
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('✓ Evento DOMContentLoaded - Inicializando reloj');
+        iniciarReloj();
+    });
+} else {
+    // El DOM ya está listo
+    console.log('✓ DOM ya listo - Inicializando reloj directamente');
+    iniciarReloj();
+}
+
+/**
+ * Re-iniciar reloj cuando la app se enfoca (vuelve a primer plano)
+ * Importante para PWA instalada
+ */
+window.addEventListener('focus', function() {
+    console.log('✓ App enfocada - Verificando reloj');
+    if (!intervaloReloj) {
+        console.log('⚠ Intervalo inactivo, reiniciando...');
+        iniciarReloj();
+    }
 });
 
 /**
- * Si el navegador cierra la pestaña sin estar lista,
- * registrar un event listener adicional como respaldo
+ * Pausar reloj cuando la app pierde enfoque (va a background)
+ * Importante para ahorro de batería en móviles
  */
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', actualizarReloj);
-} else {
-    actualizarReloj();
-}
+window.addEventListener('blur', function() {
+    console.log('⏸ App en background');
+});
+
+/**
+ * Manejar visibilidad de la página (importante para PWA)
+ */
+document.addEventListener('visibilitychange', function() {
+    if (document.hidden) {
+        console.log('⏸ Página oculta');
+    } else {
+        console.log('✓ Página visible - Reiniciando reloj si es necesario');
+        if (!intervaloReloj) {
+            iniciarReloj();
+        }
+    }
+});
+
+// Log de inicialización
+console.log('✓ Script app.js cargado correctamente');
