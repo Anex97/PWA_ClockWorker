@@ -4,7 +4,7 @@
    =========================================== */
 
 // Versión del caché - cambiar cuando se realicen cambios
-const VERSION_CACHE = 'clock-worker-v5';
+const VERSION_CACHE = 'clock-worker-v6';
 
 // Archivos a cachear
 const ARCHIVOS_A_CACHEAR = [
@@ -66,7 +66,7 @@ self.addEventListener('activate', (evento) => {
 
 /**
  * Evento: Intercepción de requests (fetch)
- * Implementa estrategia "Cache First, Network Fallback"
+ * Implementa estrategia inteligente según el tipo de archivo
  */
 self.addEventListener('fetch', (evento) => {
     const url = evento.request.url;
@@ -76,39 +76,72 @@ self.addEventListener('fetch', (evento) => {
         return;
     }
     
+    // Para JavaScript (crítico que siempre funcione)
+    if (url.includes('.js')) {
+        evento.respondWith(
+            fetch(evento.request)
+                .then((response) => {
+                    if (response && response.status === 200) {
+                        // Clonar y guardar en caché
+                        const responseClone = response.clone();
+                        caches.open(VERSION_CACHE).then((cache) => {
+                            cache.put(evento.request, responseClone);
+                        });
+                        return response;
+                    }
+                    return response;
+                })
+                .catch(() => {
+                    // Si falla la red, usar caché
+                    return caches.match(evento.request);
+                })
+        );
+        return;
+    }
+    
+    // Para HTML (también Network First)
+    if (url.includes('.html') || url.endsWith('/')) {
+        evento.respondWith(
+            fetch(evento.request)
+                .then((response) => {
+                    if (response && response.status === 200) {
+                        const responseClone = response.clone();
+                        caches.open(VERSION_CACHE).then((cache) => {
+                            cache.put(evento.request, responseClone);
+                        });
+                        return response;
+                    }
+                    return response;
+                })
+                .catch(() => {
+                    return caches.match(evento.request);
+                })
+        );
+        return;
+    }
+    
+    // Para otros archivos (CSS, imágenes, GIF) - Cache First
     evento.respondWith(
         caches.match(evento.request)
             .then((respuesta) => {
-                // Si el archivo está en caché, devolverlo
                 if (respuesta) {
-                    console.log('✓ Sirviendo desde caché:', url);
                     return respuesta;
                 }
                 
-                // Si no está en caché, intentar obtenerlo de la red
                 return fetch(evento.request)
                     .then((respuestaRed) => {
-                        // Verificar que la respuesta sea válida
                         if (!respuestaRed || respuestaRed.status !== 200 || respuestaRed.type === 'error') {
                             return respuestaRed;
                         }
                         
-                        // Clonar la respuesta
                         const respuestaClonada = respuestaRed.clone();
+                        caches.open(VERSION_CACHE).then((cache) => {
+                            cache.put(evento.request, respuestaClonada);
+                        });
                         
-                        // Guardar en caché
-                        caches.open(VERSION_CACHE)
-                            .then((cache) => {
-                                cache.put(evento.request, respuestaClonada);
-                            });
-                        
-                        console.log('✓ Cacheando nuevamente:', url);
                         return respuestaRed;
                     })
                     .catch(() => {
-                        // Si no hay conexión y no está en caché, mostrar página offline
-                        console.warn('✗ No hay conexión y archivo no en caché:', url);
-                        // Aquí se podría retornar una página offline personalizada
                         return new Response('Sin conexión', {
                             status: 503,
                             statusText: 'Service Unavailable',

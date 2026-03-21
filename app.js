@@ -3,8 +3,19 @@
    Actualiza la hora en tiempo real cada segundo
    =========================================== */
 
-// Variable global del intervalo del reloj
+// Variables globales
 let intervaloReloj = null;
+const DEBUG = true;
+
+/**
+ * Log mejorado con timestamp
+ */
+function logApp(mensaje) {
+    const timestamp = new Date().toLocaleTimeString();
+    if (DEBUG) {
+        console.log(`[${timestamp}] ${mensaje}`);
+    }
+}
 
 /**
  * Función para obtener la hora actual formateada
@@ -12,13 +23,9 @@ let intervaloReloj = null;
  */
 function obtenerHoraActual() {
     const ahora = new Date();
-    
-    // Extraer horas, minutos y segundos
     const horas = String(ahora.getHours()).padStart(2, '0');
     const minutos = String(ahora.getMinutes()).padStart(2, '0');
     const segundos = String(ahora.getSeconds()).padStart(2, '0');
-    
-    // Retornar la hora formateada
     return `${horas}:${minutos}:${segundos}`;
 }
 
@@ -29,18 +36,15 @@ function obtenerHoraActual() {
 function obtenerFechaActual() {
     const ahora = new Date();
     
-    // Array de nombres de meses
     const meses = [
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
     ];
     
-    // Array de nombres de días
     const diasSemana = [
         'Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'
     ];
     
-    // Construir la fecha formateada
     const mes = meses[ahora.getMonth()];
     const dia = ahora.getDate();
     const año = ahora.getFullYear();
@@ -51,93 +55,92 @@ function obtenerFechaActual() {
 
 /**
  * Función para actualizar el reloj en el DOM
- * Se ejecuta cada segundo
+ * Se ejecuta cada segundo sin errores
  */
 function actualizarReloj() {
-    // Obtener referencias a los elementos del DOM
-    const elementoReloj = document.getElementById('clock');
-    const elementoFecha = document.getElementById('date-display');
-    
-    // Verificar que los elementos existan
-    if (elementoReloj && elementoFecha) {
-        // Actualizar la hora
-        elementoReloj.textContent = obtenerHoraActual();
+    try {
+        const elementoReloj = document.getElementById('clock');
+        const elementoFecha = document.getElementById('date-display');
         
-        // Actualizar la fecha
-        elementoFecha.textContent = obtenerFechaActual();
+        if (elementoReloj) {
+            elementoReloj.textContent = obtenerHoraActual();
+        }
+        
+        if (elementoFecha) {
+            elementoFecha.textContent = obtenerFechaActual();
+        }
+    } catch (error) {
+        console.error('Error actualizando reloj:', error);
     }
 }
 
 /**
- * Función para iniciar el reloj automático
- * Se puede llamar múltiples veces sin problemas
+ * Función para iniciar el reloj
+ * Crítica para Android y PWA instalada
  */
 function iniciarReloj() {
-    // Detener intervalo anterior si existe (por si acaso)
+    // Detener intervalo anterior para evitar duplicados
     if (intervaloReloj) {
         clearInterval(intervaloReloj);
-        console.log('⏹ Intervalo anterior detenido');
+        logApp('Intervalo anterior detenido');
     }
     
-    console.log('⏱ Iniciando reloj...');
+    logApp('⏱ Iniciando reloj...');
     
-    // Actualizar la hora inmediatamente
+    // Actualizar hora inmediatamente
     actualizarReloj();
     
-    // Actualizar la hora cada segundo (1000 ms)
-    intervaloReloj = setInterval(actualizarReloj, 1000);
+    // Iniciar intervalo cada segundo (crucial)
+    intervaloReloj = setInterval(function() {
+        actualizarReloj();
+    }, 1000);
     
-    console.log('✓ Reloj actualizándose automáticamente cada segundo');
+    logApp('✓ Reloj ACTIVO - actualizando cada segundo');
+    
+    // Verificar que el intervalo está corriendo
+    setTimeout(() => {
+        if (intervaloReloj) {
+            logApp('✓ Verificación: Intervalo funcionando correctamente');
+        } else {
+            logApp('⚠ Advertencia: Intervalo no está asignado');
+        }
+    }, 2000);
 }
 
 /**
- * Inicialización de la aplicación - Ejecutarse lo antes posible
+ * Inicializar lo antes posible - CRÍTICO para PWA
  */
-if (document.readyState === 'loading') {
-    // El DOM aún se está cargando
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('✓ Evento DOMContentLoaded - Inicializando reloj');
+(function() {
+    logApp('✓ app.js iniciado - readyState: ' + document.readyState);
+    
+    // Inicializar según el estado del DOM
+    if (document.readyState === 'loading') {
+        // DOM aún cargándose
+        document.addEventListener('DOMContentLoaded', iniciarReloj);
+    } else if (document.readyState === 'interactive') {
+        // DOM está interactivo
         iniciarReloj();
-    });
-} else {
-    // El DOM ya está listo
-    console.log('✓ DOM ya listo - Inicializando reloj directamente');
-    iniciarReloj();
-}
-
-/**
- * Re-iniciar reloj cuando la app se enfoca (vuelve a primer plano)
- * Importante para PWA instalada
- */
-window.addEventListener('focus', function() {
-    console.log('✓ App enfocada - Verificando reloj');
-    if (!intervaloReloj) {
-        console.log('⚠ Intervalo inactivo, reiniciando...');
+    } else {
+        // DOM completamente cargado
         iniciarReloj();
     }
-});
-
-/**
- * Pausar reloj cuando la app pierde enfoque (va a background)
- * Importante para ahorro de batería en móviles
- */
-window.addEventListener('blur', function() {
-    console.log('⏸ App en background');
-});
-
-/**
- * Manejar visibilidad de la página (importante para PWA)
- */
-document.addEventListener('visibilitychange', function() {
-    if (document.hidden) {
-        console.log('⏸ Página oculta');
-    } else {
-        console.log('✓ Página visible - Reiniciando reloj si es necesario');
-        if (!intervaloReloj) {
+    
+    // Responder a cambios de visibilidad
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden && !intervaloReloj) {
+            logApp('Página visible - reiniciando reloj');
             iniciarReloj();
         }
-    }
-});
+    });
+    
+    // Responder a focus window
+    window.addEventListener('focus', function() {
+        if (!intervaloReloj) {
+            logApp('App enfocada - reiniciando reloj');
+            iniciarReloj();
+        }
+    });
+    
+})();
 
-// Log de inicialización
-console.log('✓ Script app.js cargado correctamente');
+logApp('✓ Script app.js completamente cargado');
