@@ -4,7 +4,7 @@
    =========================================== */
 
 // Versión del caché - cambiar cuando se realicen cambios
-const VERSION_CACHE = 'clock-worker-v8';
+const VERSION_CACHE = 'clock-worker-v9';
 
 // Archivos a cachear
 const ARCHIVOS_A_CACHEAR = [
